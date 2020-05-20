@@ -1,0 +1,2 @@
+%s recovered %d stamina
+%s rested to gain %d stamina

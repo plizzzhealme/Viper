@@ -1,0 +1,2 @@
+%s tried to attack, but the %s dodged
+%s damage was avoided by %s

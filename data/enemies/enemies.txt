@@ -1,0 +1,4 @@
+Jagger 7 6
+Nakamura 10 9
+Garcia 9 16
+King 17 14

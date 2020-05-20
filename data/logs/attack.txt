@@ -1,0 +1,5 @@
+%s hit %s for %d damage
+%s struck %s for %d damage
+%s blasted %s for %d damage
+%s wounded %s for %d damage
+%s punched %s for %d damage

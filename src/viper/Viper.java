@@ -19,6 +19,7 @@ public class Viper {
     private static final List<ImageIcon> enemyIcons;
     private static final List<Hero> heroes;
     private static final List<Boxer> enemies;
+    private static final List<String> intro;
 
     static {
         List<String> temp;
@@ -43,6 +44,8 @@ public class Viper {
             enemyIcons.add(new ImageIcon("data/enemies/enemy-" + i + ".gif"));
         }
 
+        intro = readFromFile("data/intro.txt");
+
     }
 
     public static void main(String[] args) {
@@ -50,7 +53,7 @@ public class Viper {
         frame.setSize(666   , 389);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        new StartController(frame, heroes, heroIcons, enemies, enemyIcons).run();
+        new StartController(frame, intro, heroes, heroIcons, enemies, enemyIcons).run();
     }
 
     public static List<String> readFromFile(String path) {

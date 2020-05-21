@@ -36,8 +36,6 @@ public class CombatController {
         printCombatLog(combat.recover());
     }
 
-
-
     private void printCombatLog(int result) {
         combatPanel.txtCombatLog.append(LogBuilder.buildTurnLog(result,
                 combat.getPlayer().getName(),
@@ -55,6 +53,11 @@ public class CombatController {
     }
 
     private void updateView() {
+        combatPanel.prgPlayerHealth.setValue(combat.getPlayer().getCurrentHp());
+        combatPanel.prgPlayerStamina.setValue(combat.getPlayer().getCurrentStamina());
+
+        combatPanel.prgEnemyHealth.setValue(combat.getEnemy().getCurrentHp());
+        combatPanel.prgEnemyStamina.setValue(combat.getEnemy().getCurrentStamina());
 
         combatPanel.btnAttack.setEnabled(combat.getPlayer().isAttackAvailable()
                 && !combat.isCombatEnded());

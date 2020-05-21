@@ -15,7 +15,7 @@ public class GameController {
     final CombatPanel combatPanel;
     final CombatController combatController;
     final CardLayout cardLayout;
-    final JPanel cards;
+    final JPanel panels;
     final Game game;
     final List<ImageIcon> enemyIcons;
 
@@ -23,26 +23,19 @@ public class GameController {
                           CombatPanel combatPanel,
                           GamePanel gamePanel,
                           CardLayout cardLayout,
-                          JPanel cards, List<ImageIcon> enemyIcons) {
+                          JPanel panels, List<ImageIcon> enemyIcons) {
         this.combatPanel = combatPanel;
         this.gamePanel = gamePanel;
         this.cardLayout = cardLayout;
-        this.cards = cards;
+        this.panels = panels;
         this.game = game;
         this.enemyIcons = enemyIcons;
         combatController = new CombatController(combatPanel);
-
     }
 
     void run() {
-
-        gamePanel
-                .lblEnemyIcon
-                .setIcon(
-                        enemyIcons.get(0));
+        gamePanel.lblEnemyIcon.setIcon(enemyIcons.get(0));
         gamePanel.lblPlayerName.setText(game.getPlayer().getName());
-        //gamePanel.lblPlayerName.setText(selectedHero.getName());
-       // gamePanel.lblEnemyName.setText(enemies.get(0).getName());
 
         gamePanel.btnRest.setEnabled(false);
         gamePanel.btnNewCombat.setEnabled(true);
@@ -50,7 +43,7 @@ public class GameController {
         gamePanel.btnCardio.setEnabled(true);
 
         combatPanel.lblPlayerIcon.setIcon(gamePanel.lblPlayerIcon.getIcon());
-        combatPanel.lblPlayerName.setText(game.getPlayer().getName());
+
         addActionListeners();
     }
 
@@ -65,14 +58,27 @@ public class GameController {
 
     public void startNewCombat() {
         combatPanel.txtCombatLog.setText("");
-        combatPanel.prgPlayerHealth.setMaximum(game.getPlayer().getMaxHp());
-        combatPanel.prgPlayerHealth.setValue(game.getPlayer().getMaxHp());
-        game.startNewCombat();
-        combatController.run(game.getCombat());
-        combatController.run(game.getCombat());
-        combatPanel.lblEnemyName.setText(game.getCurrentEnemy().getName());
+
         combatPanel.lblEnemyIcon.setIcon(gamePanel.lblEnemyIcon.getIcon());
-        cardLayout.show(cards, StartController.COMBAT_PANEL);
+        combatPanel.lblEnemyIcon.setToolTipText(LogBuilder.buildToolTip(game.getCurrentEnemy()));
+
+        combatPanel.prgPlayerHealth.setMaximum(game.getPlayer().getMaxHp());
+        combatPanel.prgPlayerHealth.setValue(game.getPlayer().getCurrentHp());
+
+        combatPanel.prgPlayerStamina.setMaximum(game.getPlayer().getMaxStamina());
+        combatPanel.prgPlayerStamina.setValue(game.getPlayer().getCurrentStamina());
+
+        combatPanel.prgEnemyHealth.setMaximum(game.getCurrentEnemy().getMaxHp());
+        combatPanel.prgEnemyHealth.setValue(game.getCurrentEnemy().getCurrentHp());
+
+        combatPanel.prgEnemyStamina.setMaximum(game.getCurrentEnemy().getMaxStamina());
+        combatPanel.prgEnemyStamina.setValue(game.getCurrentEnemy().getCurrentStamina());
+
+        game.startNewCombat();
+
+        combatController.run(game.getCombat());
+
+        cardLayout.next(panels);
     }
 
     private void finishCombat() {
@@ -81,7 +87,7 @@ public class GameController {
             gamePanel.lblEnemyIcon.setToolTipText(LogBuilder.buildToolTip(game.getCurrentEnemy()));
         }
         gamePanel.txtGameLog.append("combat ended\n");
-        cardLayout.show(cards, StartController.GAME_PANEL);
+        cardLayout.previous(panels);
 
         gamePanel.btnRest.setEnabled(!game.isGameEnded());
         gamePanel.btnNewCombat.setEnabled(false);
@@ -110,9 +116,6 @@ public class GameController {
             gamePanel.btnWorkout.setEnabled(false);
             gamePanel.btnCardio.setEnabled(false);
         }
-
-
-
     }
 
     public void workout() {
@@ -128,6 +131,6 @@ public class GameController {
 
     private void finishGame() {
         game.finishGame();
-        cardLayout.show(cards, StartController.HERO_SELECTION_PANEL);
+        cardLayout.previous(panels);
     }
 }

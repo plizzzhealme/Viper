@@ -4,43 +4,36 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
-    // left
-    public final JLabel lblPlayerName;
-    public final JLabel lblPlayerIcon;
-
-    // center
-    private final JScrollPane scrGameLog;
+    // common
     public final JTextArea txtGameLog;
     public final JLabel lblGameProgress;
-
-    // right
-    public final JLabel lblEnemyName;
-    public final JLabel lblEnemyIcon;
-
-    // bottom
     public final JButton btnNewCombat;
     public final JButton btnRest;
     public final JButton btnWorkout;
     public final JButton btnCardio;
     public final JButton btnExitGame;
 
+    // player
+    public final JLabel lblPlayerIcon;
+    public final JLabel lblPlayerName;
+
+    // enemy
+    public final JLabel lblEnemyIcon;
+    public final JLabel lblEnemyName;
+
     public GamePanel() {
         Dimension buttonSize;
 
-        // left
+        // common
         lblPlayerName = new JLabel();
         lblPlayerIcon = new JLabel();
-
-        // center
         txtGameLog = new JTextArea(1, 1);
-        scrGameLog = new JScrollPane(txtGameLog);
+        txtGameLog.setEditable(false);
+        txtGameLog.setLineWrap(true);
+        txtGameLog.setWrapStyleWord(true);
         lblGameProgress = new JLabel("<html><p>Game progress: <b>5</b></p></html>");
-
-        // right
         lblEnemyName = new JLabel("enemy");
         lblEnemyIcon = new JLabel();
-
-        // bottom
         buttonSize = new Dimension(32, 32);
 
         btnNewCombat = new JButton(new ImageIcon("data/buttons/start-combat.png"));
@@ -67,16 +60,17 @@ public class GamePanel extends JPanel {
     }
 
     private void addComponents() {
-        GroupLayout layout;
-        JPanel playerName;
+        JScrollPane scrGameLog;
         JPanel gameProgress;
-        JPanel enemyName;
         JPanel buttons;
+        JPanel playerName;
+        JPanel enemyName;
+        GroupLayout layout;
 
-        layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        scrGameLog = new JScrollPane(txtGameLog);
+
+        gameProgress = new JPanel();
+        gameProgress.add(lblGameProgress);
 
         buttons = new JPanel();
         buttons.add(btnNewCombat);
@@ -85,14 +79,19 @@ public class GamePanel extends JPanel {
         buttons.add(btnCardio);
         buttons.add(btnExitGame);
 
-        gameProgress = new JPanel();
-        gameProgress.add(lblGameProgress);
-
         playerName = new JPanel();
         playerName.add(lblPlayerName);
 
         enemyName = new JPanel();
         enemyName.add(lblEnemyName);
+
+        layout = new GroupLayout(this);
+        setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        layout.linkSize(SwingConstants.VERTICAL, lblPlayerIcon, scrGameLog);
+        layout.linkSize(SwingConstants.HORIZONTAL, lblPlayerIcon, playerName, enemyName);
+        layout.linkSize(SwingConstants.VERTICAL, playerName, enemyName, gameProgress);
 
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
@@ -115,8 +114,5 @@ public class GamePanel extends JPanel {
                         .addComponent(gameProgress)
                         .addComponent(enemyName))
                 .addComponent(buttons));
-
-        layout.linkSize(SwingConstants.VERTICAL, lblPlayerIcon, scrGameLog);
-        layout.linkSize(SwingConstants.HORIZONTAL, lblPlayerIcon, playerName, enemyName);
     }
 }

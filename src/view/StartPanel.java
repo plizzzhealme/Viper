@@ -4,77 +4,85 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StartPanel extends JPanel {
-    // top
-    public final JLabel lblHeroList;
-    public final JComboBox<String> cmbHeroList;
+    /**
+     * Displays game logo
+     */
+    private final JLabel lblLogo;
 
-    // center
+    /**
+     * Displays game intro and rules
+     */
     public final JTextArea txtInfo;
 
-    // right
+    /**
+     * Displays the image with selected hero
+     */
     public final JLabel lblHeroIcon;
 
-    // bottom
+    /**
+     * Confirms hero selection and starts new game
+     */
     public final JButton btnSelectHero;
 
+    /**
+     * List of available heroes to choose from
+     */
+    public final JComboBox<String> cmbHeroes;
+
     public StartPanel() {
-        // top
-        lblHeroList = new JLabel("Choose a hero");
-        cmbHeroList = new JComboBox<>();
+        lblLogo = new JLabel(new ImageIcon("data/viper.png"));
 
-        // center
-        txtInfo = new JTextArea();
+        txtInfo = new JTextArea(1, 1);
+        txtInfo.setEditable(false);
+        txtInfo.setLineWrap(true);
+        txtInfo.setWrapStyleWord(true);
 
-        // right
         lblHeroIcon = new JLabel();
 
-        // bottom
         btnSelectHero = new JButton(new ImageIcon("data/buttons/confirm.png"));
+        btnSelectHero.setPreferredSize(new Dimension(32, 32));
+        btnSelectHero.setToolTipText("Select hero");
+
+        cmbHeroes = new JComboBox<>();
 
         addComponents();
     }
 
     private void addComponents() {
+        JScrollPane scrInfo;
+        JPanel buttonPanel;
+        GroupLayout layout;
 
-        setLayout(new BorderLayout());
+        scrInfo = new JScrollPane(txtInfo);
 
-        // top
-       // top = new JPanel();
-      //  top.add(lblHeroList);
-      //  top.add(cmbHeroList);
-      //  add(top, BorderLayout.PAGE_START);
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        buttonPanel.add(btnSelectHero);
 
-        // center
-        JPanel center = new JPanel();
-        center.setLayout(new BorderLayout());
-        center.add(new JScrollPane(txtInfo), BorderLayout.CENTER);
-      //  add(center, BorderLayout.CENTER);
+        layout = new GroupLayout(this);
+        setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
 
-        // right
-        JPanel right = new JPanel();
-        right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-      //  JPanel rightTop = new JPanel();
-      //  rightTop.add(cmbHeroList);
-        JPanel cmb = new JPanel();
-        cmb.add(cmbHeroList);
+        layout.linkSize(SwingConstants.VERTICAL, lblLogo, scrInfo, lblHeroIcon);
+        layout.linkSize(SwingConstants.HORIZONTAL, cmbHeroes, lblHeroIcon);
+        layout.linkSize(SwingConstants.VERTICAL, buttonPanel, cmbHeroes);
 
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addComponent(lblLogo)
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(scrInfo)
+                        .addComponent(buttonPanel))
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(lblHeroIcon)
+                        .addComponent(cmbHeroes)));
 
-        JPanel icon = new JPanel();
-        icon.setBorder(BorderFactory.createEtchedBorder());
-        icon.add(lblHeroIcon);
-        right.add(icon);
-        right.add(cmb);
-        btnSelectHero.setPreferredSize(new Dimension(32, 32));
-        btnSelectHero.setToolTipText("Select hero");
-        right.add(btnSelectHero);
-
-        add(right, BorderLayout.LINE_END);
-
-        // bottom
-
-      //  bottom = new JPanel();
-      //  bottom.setLayout(new FlowLayout());
-      //  bottom.add(btnSelectHero);
-       // add(bottom, BorderLayout.PAGE_END);
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(lblLogo)
+                        .addComponent(scrInfo)
+                        .addComponent(lblHeroIcon))
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(buttonPanel)
+                        .addComponent(cmbHeroes)));
     }
 }

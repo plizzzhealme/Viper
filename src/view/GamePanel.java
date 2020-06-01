@@ -36,23 +36,23 @@ public class GamePanel extends JPanel {
         lblEnemyIcon = new JLabel();
         buttonSize = new Dimension(32, 32);
 
-        btnNewCombat = new JButton(new ImageIcon("data/buttons/start-combat.png"));
+        btnNewCombat = new JButton(new ImageIcon("resources/buttons/start-combat.png"));
         btnNewCombat.setPreferredSize(buttonSize);
         btnNewCombat.setToolTipText("New combat");
 
-        btnRest = new JButton(new ImageIcon("data/buttons/rest.png"));
+        btnRest = new JButton(new ImageIcon("resources/buttons/rest.png"));
         btnRest.setPreferredSize(buttonSize);
         btnRest.setToolTipText("Rest");
 
-        btnWorkout = new JButton(new ImageIcon("data/buttons/workout.png"));
+        btnWorkout = new JButton(new ImageIcon("resources/buttons/workout.png"));
         btnWorkout.setPreferredSize(buttonSize);
         btnWorkout.setToolTipText("Workout");
 
-        btnCardio = new JButton(new ImageIcon("data/buttons/cardio.png"));
+        btnCardio = new JButton(new ImageIcon("resources/buttons/cardio.png"));
         btnCardio.setPreferredSize(buttonSize);
         btnCardio.setToolTipText("Cardio");
 
-        btnExitGame = new JButton(new ImageIcon("data/buttons/exit.png"));
+        btnExitGame = new JButton(new ImageIcon("resources/buttons/exit.png"));
         btnExitGame.setPreferredSize(buttonSize);
         btnExitGame.setToolTipText("Exit");
 

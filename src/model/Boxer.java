@@ -1,12 +1,15 @@
 package model;
 
+import javax.swing.*;
 import java.util.Random;
 
 public class Boxer {
     static final Random RANDOM = new Random();
     static final int MAX_DODGE = 75;
     static final int MAX_DEFENCE = 75;
+
     final String name;
+    final ImageIcon icon;
 
     int strength;
     int agility;
@@ -20,8 +23,9 @@ public class Boxer {
     int maxStamina;
     int staminaRegen;
 
-    public Boxer(String name, int strength, int agility) {
+    public Boxer(String name, ImageIcon icon, int strength, int agility) {
         this.name = name;
+        this.icon = icon;
         this.strength = strength;
         this.agility = agility;
 
@@ -38,7 +42,7 @@ public class Boxer {
 
     @SuppressWarnings("CopyConstructorMissesField")
     public Boxer(Boxer boxer) {
-        this(boxer.getName(), boxer.getStrength(), boxer.getAgility());
+        this(boxer.name, boxer.icon, boxer.strength, boxer.agility);
     }
 
     public int attack() {
@@ -132,5 +136,9 @@ public class Boxer {
 
     public int getDodge() {
         return dodge;
+    }
+
+    public ImageIcon getIcon() {
+        return icon;
     }
 }

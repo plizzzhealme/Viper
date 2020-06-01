@@ -1,8 +1,10 @@
 package controller;
 
 import model.Boxer;
+import model.Game;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class LogBuilder {
     static String buildToolTip(Boxer boxer) {
@@ -37,12 +39,33 @@ public class LogBuilder {
 
     static String buildTurnLog(int damage, String attackerName, String defenderName) {
         LocalTime t = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss");
         if (damage < 0) {
-            return "[" + t + "] " + String.format("%s recovered %d stamina", attackerName, -damage);
+            return String.format("[%s] %s recovered %d stamina",
+                    LocalTime.now().format(formatter),
+                    attackerName,
+                    -damage);
         } else if (damage == 0) {
-            return "[" + t + "] " + String.format("%s dodged %s's attack", defenderName, attackerName);
+            return String.format("[%s] %s dodged %s's attack",
+                    LocalTime.now().format(formatter),
+                    defenderName,
+                    attackerName);
         } else {
-            return "[" + t + "] " + String.format("%s hit %s for %d damage", attackerName, defenderName, damage);
+            return String.format("[%s] %s hit %s for %d damage",
+                    LocalTime.now().format(formatter),
+                    attackerName,
+                    defenderName,
+                    damage);
         }
+    }
+
+    static String buildGameLog(Game game) {
+        return String.format("Week: %d/%d Wins: %d/%d Losses: %d/%d",
+                game.getCurrentWeek(),
+                Game.TIME_LIMIT,
+                game.getWinCount(),
+                Game.enemies.size(),
+                game.getLossCount(),
+                Game.LOSS_LIMIT);
     }
 }

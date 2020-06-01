@@ -30,7 +30,7 @@ public class StartPanel extends JPanel {
     public final JComboBox<String> cmbHeroes;
 
     public StartPanel() {
-        lblLogo = new JLabel(new ImageIcon("data/viper.png"));
+        lblLogo = new JLabel(new ImageIcon("data/logo-image.png"));
 
         txtInfo = new JTextArea(1, 1);
         txtInfo.setEditable(false);
@@ -39,7 +39,7 @@ public class StartPanel extends JPanel {
 
         lblHeroIcon = new JLabel();
 
-        btnSelectHero = new JButton(new ImageIcon("data/buttons/confirm.png"));
+        btnSelectHero = new JButton(new ImageIcon("resources/buttons/confirm.png"));
         btnSelectHero.setPreferredSize(new Dimension(32, 32));
         btnSelectHero.setToolTipText("Select hero");
 

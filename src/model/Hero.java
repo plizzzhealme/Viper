@@ -1,10 +1,12 @@
 package model;
 
+import javax.swing.*;
+
 public class Hero extends Boxer {
     private static final int SPECIAL_ATTACK_COST = 10;
 
-    public Hero(String name, int strength, int agility) {
-        super(name, strength, agility);
+    public Hero(String name, ImageIcon icon, int strength, int agility) {
+        super(name, icon, strength, agility);
     }
 
     public Hero(Boxer boxer) {

@@ -1,21 +1,34 @@
 package model;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
+    public static final int TIME_LIMIT = 40;
+    public static final int LOSS_LIMIT = 2;
+    public static final List<Boxer> enemies = new ArrayList<>();
+    public static final List<Hero> heroes = new ArrayList<>();
+
     private static final String IN_COMBAT_EXCEPTION = "You are in combat";
     private static final String NOT_IN_COMBAT_EXCEPTION = "You are not in combat";
-    private static final String REST_REQUIRED_EXCEPTION = "Rest required";
+    private static final String REST_REQUIRED_EXCEPTION = "Rest is required";
+    private static final String REST_NOT_REQUIRED_EXCEPTION = "Rest is not required";
     private static final String GAME_ENDED_EXCEPTION = "Game is ended";
     private static final Random RANDOM = new Random();
 
-    private final String nickname;
-    private final Hero player;
-    private final List<Boxer> enemies;
-    private final int weekLimit;
-    private final int lossLimit;
+    static {
+        enemies.add(new Boxer("Jagger", new ImageIcon("resources/enemies/enemy-0.gif"), 7, 6));
+        enemies.add(new Boxer("Nakamura", new ImageIcon("resources/enemies/enemy-1.gif"), 10, 9));
+        enemies.add(new Boxer("Garcia", new ImageIcon("resources/enemies/enemy-2.gif"), 9, 16));
+        enemies.add(new Boxer("King", new ImageIcon("resources/enemies/enemy-3.gif"), 17, 14));
+
+        heroes.add(new Hero("Bulldog", new ImageIcon("resources/heroes/hero-0.gif"), 8, 2));
+        heroes.add(new Hero("Connor", new ImageIcon("resources/heroes/hero-1.gif"), 3, 7));
+    }
+
+    private Hero player;
     private int currentWeek;
     private int lossCount;
     private int winCount;
@@ -24,21 +37,14 @@ public class Game {
     private String gameResult;
     private boolean inCombat;
 
-    public Game(String nickname, Hero player, List<Boxer> enemies, int weekLimit, int lossLimit) {
-        this.nickname = nickname;
-        this.player = new Hero(player);
-        this.enemies = new ArrayList<>(enemies.size());
-        this.weekLimit = weekLimit;
-        this.lossLimit = lossLimit;
-
-        for (Boxer enemy : enemies) {
-            this.enemies.add(new Boxer(enemy));
-        }
+    public Game() {
+        currentWeek = 1;
     }
 
-    /**
-     * Starts new combat
-     */
+    public void selectHero(int i) {
+        player = new Hero(heroes.get(i));
+    }
+
     public void startNewCombat() {
         if (isGameEnded()) {
             throw new IllegalStateException(GAME_ENDED_EXCEPTION);
@@ -54,17 +60,14 @@ public class Game {
 
         combat = new Combat(player, new Boxer(enemies.get(winCount)));
         inCombat = true;
+        restRequired = true;
     }
 
-    /**
-     * Finishes current combat
-     */
     public void finishCombat() {
         if (!isInCombat()) {
             throw new IllegalStateException(NOT_IN_COMBAT_EXCEPTION);
         }
 
-        restRequired = true;
         inCombat = false;
 
         if (player.isDead() || !combat.isCombatEnded()) {
@@ -74,10 +77,6 @@ public class Game {
         }
     }
 
-    /**
-     * Recover after combat
-     * @return rest time in weeks
-     */
     public int rest() {
         if (isInCombat()) {
             throw new IllegalStateException(IN_COMBAT_EXCEPTION);
@@ -87,34 +86,31 @@ public class Game {
             throw new IllegalStateException(GAME_ENDED_EXCEPTION);
         }
 
-        if (isRestRequired()) {
-            int restTime;
-            int hpPercents = 100 * player.getCurrentHp() / player.getMaxHp();
-
-            if (hpPercents == 0) {
-                restTime = 7;
-            } else if (hpPercents < 25) {
-                restTime = 6;
-            } else if (hpPercents < 50) {
-                restTime = 5;
-            } else if (hpPercents < 80) {
-                restTime = 4;
-            } else {
-                restTime = 3;
-            }
-            currentWeek += restTime;
-            restRequired = false;
-            player.recoverAfterCombat();
-            return restTime;
-        } else {
-            return 0;
+        if (!isRestRequired()) {
+            throw new IllegalStateException(REST_NOT_REQUIRED_EXCEPTION);
         }
+
+        int restTime;
+        int hpPercents = 100 * player.getCurrentHp() / player.getMaxHp();
+
+        if (hpPercents == 0) {
+            restTime = 7;
+        } else if (hpPercents < 25) {
+            restTime = 6;
+        } else if (hpPercents < 50) {
+            restTime = 5;
+        } else if (hpPercents < 75) {
+            restTime = 4;
+        } else {
+            restTime = 3;
+        }
+
+        currentWeek += restTime;
+        restRequired = false;
+        player.recoverAfterCombat();
+        return restTime;
     }
 
-    /**
-     * Trains strength
-     * @return gained strength
-     */
     public int workout() {
         if (isGameEnded()) {
             throw new IllegalStateException(GAME_ENDED_EXCEPTION);
@@ -135,10 +131,6 @@ public class Game {
         return bonus;
     }
 
-    /**
-     * Trains agility
-     * @return gained agility
-     */
     public int cardio() {
         if (isGameEnded()) {
             throw new IllegalStateException(GAME_ENDED_EXCEPTION);
@@ -152,35 +144,32 @@ public class Game {
             throw new IllegalStateException(REST_REQUIRED_EXCEPTION);
         }
 
-        int bonus = player.getAgility() * (RANDOM.nextInt(25) + 1) / 100 + 1;
+        int bonus = player.getAgility() * (RANDOM.nextInt(21) + 5) / 100 + 1;
         player.increaseAgility(bonus);
         currentWeek++;
 
         return bonus;
     }
 
-    /**
-     * Finishes the game
-     */
     public void finishGame() {
         int playerScores;
 
         if (winCount == enemies.size()) {
-            playerScores = 200 + weekLimit - currentWeek + winCount - lossCount;
-        } else if (currentWeek >= weekLimit) {
+            playerScores = 200 + TIME_LIMIT - currentWeek + winCount - lossCount;
+        } else if (currentWeek >= TIME_LIMIT) {
             playerScores = 100 + winCount - lossCount;
-        } else if (lossCount > lossLimit) {
+        } else if (lossCount > LOSS_LIMIT) {
             playerScores = 10 + currentWeek + winCount - lossCount;
         } else {
             playerScores = 0;
         }
-        gameResult = String.format("%s %s %d%n", nickname, player.getName(), playerScores);
+        gameResult = String.format("%s %s %d%n", "nickname", player.getName(), playerScores);
     }
 
     public boolean isGameEnded() {
         return winCount == enemies.size()
-               || lossCount > lossLimit
-               || currentWeek > weekLimit;
+                || lossCount > LOSS_LIMIT
+                || currentWeek > TIME_LIMIT;
     }
 
     public boolean isInCombat() {
@@ -197,13 +186,20 @@ public class Game {
 
     @Override
     public String toString() {
-        return String.format("[Week: %d/%d Wins: %d/%d Losses: %d/%d]",
-                currentWeek,
-                weekLimit,
-                winCount,
-                enemies.size(),
-                lossCount,
-                lossLimit);
+        return "Game{" +
+                "nickname='" + "nickname" + '\'' +
+                ", player=" + player.getName() +
+                // ", enemies=" + enemies +
+                ", weekLimit=" + TIME_LIMIT +
+                ", lossLimit=" + LOSS_LIMIT +
+                ", currentWeek=" + currentWeek +
+                ", lossCount=" + lossCount +
+                ", winCount=" + winCount +
+                ", restRequired=" + restRequired +
+                ", combat=" + combat +
+                ", gameResult='" + gameResult + '\'' +
+                ", inCombat=" + inCombat +
+                '}';
     }
 
     public Hero getPlayer() {
@@ -218,42 +214,6 @@ public class Game {
         return gameResult;
     }
 
-    public static String getInCombatException() {
-        return IN_COMBAT_EXCEPTION;
-    }
-
-    public static String getNotInCombatException() {
-        return NOT_IN_COMBAT_EXCEPTION;
-    }
-
-    public static String getRestRequiredException() {
-        return REST_REQUIRED_EXCEPTION;
-    }
-
-    public static String getGameEndedException() {
-        return GAME_ENDED_EXCEPTION;
-    }
-
-    public static Random getRANDOM() {
-        return RANDOM;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public List<Boxer> getEnemies() {
-        return enemies;
-    }
-
-    public int getWeekLimit() {
-        return weekLimit;
-    }
-
-    public int getLossLimit() {
-        return lossLimit;
-    }
-
     public int getCurrentWeek() {
         return currentWeek;
     }
@@ -265,4 +225,5 @@ public class Game {
     public int getWinCount() {
         return winCount;
     }
+
 }

@@ -36,19 +36,19 @@ public class CombatPanel extends JPanel {
 
         buttonSize = new Dimension(32, 32);
 
-        btnAttack = new JButton(new ImageIcon("data/buttons/attack.png"));
+        btnAttack = new JButton(new ImageIcon("resources/buttons/attack.png"));
         btnAttack.setPreferredSize(buttonSize);
         btnAttack.setToolTipText("Attack");
 
-        btnSpecialAttack = new JButton(new ImageIcon("data/buttons/special-attack.png"));
+        btnSpecialAttack = new JButton(new ImageIcon("resources/buttons/special-attack.png"));
         btnSpecialAttack.setPreferredSize(buttonSize);
         btnSpecialAttack.setToolTipText("Special attack");
 
-        btnRecover = new JButton(new ImageIcon("data/buttons/recover.png"));
+        btnRecover = new JButton(new ImageIcon("resources/buttons/recover.png"));
         btnRecover.setPreferredSize(buttonSize);
         btnRecover.setToolTipText("Recover");
 
-        btnExitCombat = new JButton(new ImageIcon("data/buttons/exit.png"));
+        btnExitCombat = new JButton(new ImageIcon("resources/buttons/exit.png"));
         btnExitCombat.setPreferredSize(buttonSize);
         btnExitCombat.setToolTipText("Leave combat");
 

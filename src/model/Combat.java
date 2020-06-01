@@ -24,7 +24,7 @@ public class Combat {
         playersTurn = true;
     }
 
-    public int attack() {
+    public int makeAttackTurn() {
         int damageDone;
         int damageTaken;
 
@@ -34,7 +34,7 @@ public class Combat {
         return damageTaken;
     }
 
-    public int specialAttack() {
+    public int makeSpecialAttackTurn() {
         int damageDone;
         int damageTaken;
 
@@ -45,11 +45,11 @@ public class Combat {
         return damageTaken;
     }
 
-    public int recover() {
+    public int makeRecoveryTurn() {
         return -player.recoverStamina();
     }
 
-    public int botTurn() {
+    public int makeBotTurn() {
         if (enemy.isAttackAvailable()) {
             int damageDone;
             int damageTaken;

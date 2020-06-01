@@ -1,0 +1,4 @@
+"I've been boxing my whole life. Nowadays I'm too old and broken to step on the ring." - Shawn Viper, retired lightweight champion.
+
+Welcome to the game "Viper" where you are in a control of Shawn Viper, retired lightweight champion, as a boxing manager. Goal of the game is that you have to select a promising adept and train him so he can become a new junior lightweight champion.
+You have only 40 weeks to do so. If your fighter isn't strong enough you have to train him. Workout will increase your fighter's strength, add damage, defence and HP. Cardio will increase your fighter's agility, add stamina, stamina recovery and dodge chance.

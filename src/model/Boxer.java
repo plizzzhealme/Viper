@@ -13,15 +13,16 @@ public class Boxer {
 
     int strength;
     int agility;
-    int damage;
-    int defence;
-    int currentHp;
-    int maxHp;
-    int attackCost;
-    int dodge;
-    int currentStamina;
-    int maxStamina;
-    int staminaRegen;
+
+    transient int damage;
+    transient int defence;
+    transient int currentHp;
+    transient int maxHp;
+    transient int attackCost;
+    transient int dodge;
+    transient int currentStamina;
+    transient int maxStamina;
+    transient int staminaRegen;
 
     public Boxer(String name, ImageIcon icon, int strength, int agility) {
         this.name = name;
@@ -40,7 +41,6 @@ public class Boxer {
         attackCost = Math.min((int) (3.55 + 0.45 * strength + 0.5), maxStamina);
     }
 
-    @SuppressWarnings("CopyConstructorMissesField")
     public Boxer(Boxer boxer) {
         this(boxer.name, boxer.icon, boxer.strength, boxer.agility);
     }

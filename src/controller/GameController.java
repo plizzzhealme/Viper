@@ -28,6 +28,7 @@ public class GameController {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
+                updateView();
             }
         });
 
@@ -52,7 +53,7 @@ public class GameController {
 
     public void startNewCombat() {
         game.startNewCombat();
-        cardLayout.next(cardPanel);
+        cardLayout.show(cardPanel, CardPanel.COMBAT_PANEL);
     }
 
     public void setGame(Game game) {
@@ -82,7 +83,7 @@ public class GameController {
 
     private void finishGame() {
         game.finishGame();
-        cardLayout.previous(cardPanel);
+        cardLayout.show(cardPanel, CardPanel.START_PANEL);
     }
 
     private void updateView() {

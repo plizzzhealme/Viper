@@ -17,9 +17,8 @@ public class StartController {
 
 
     public StartController() {
-        cardLayout = new CardLayout();
-        cardPanel = new CardPanel(cardLayout);
-
+        cardPanel = new CardPanel();
+        cardLayout = cardPanel.cardLayout;
         startPanel = cardPanel.startPanel;
 
         gameController = new GameController(cardPanel);
@@ -49,14 +48,11 @@ public class StartController {
     }
 
     private void startNewGame() {
-        int i;
-
-        i = startPanel.cmbHeroes.getSelectedIndex();
         Game game = new Game();
-        game.selectHero(i);
+        game.selectHero(startPanel.cmbHeroes.getSelectedIndex());
         gameController.setGame(game);
-        gameController.runNewGame();
         combatController.setGame(game);
-        cardLayout.next(cardPanel);
+        gameController.runNewGame();
+        cardLayout.show(cardPanel, CardPanel.GAME_PANEL);
     }
 }

@@ -5,8 +5,8 @@ import view.CardPanel;
 import view.CombatPanel;
 
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class CombatController {
     private final CombatPanel combatPanel;
@@ -23,10 +23,11 @@ public class CombatController {
         combatPanel.btnSpecialAttack.addActionListener(e -> specialAttack());
         combatPanel.btnRecover.addActionListener(e -> recover());
         combatPanel.btnExitCombat.addActionListener(e -> toGameMenu());
-        combatPanel.addFocusListener(new FocusAdapter() {
+
+        combatPanel.addComponentListener(new ComponentAdapter() {
             @Override
-            public void focusGained(FocusEvent e) {
-                super.focusGained(e);
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
                 runNewCombat();
             }
         });
@@ -74,7 +75,7 @@ public class CombatController {
 
     private void toGameMenu() {
         game.finishCombat();
-        cardLayout.previous(cardPanel);
+        cardLayout.show(cardPanel, CardPanel.GAME_PANEL);
     }
 
     private void printCombatLog(int result) {

@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-public class CombatPanel extends JPanel {
+public class PnlCombat extends JPanel {
     // common
     public final JTextArea txtCombatLog;
     public final JLabel lblCombatDescription;
@@ -22,7 +22,7 @@ public class CombatPanel extends JPanel {
     public final JProgressBar prgEnemyHealth;
     public final JProgressBar prgEnemyStamina;
 
-    public CombatPanel() {
+    public PnlCombat() {
         Dimension buttonSize;
         Dimension progressBarSize;
 

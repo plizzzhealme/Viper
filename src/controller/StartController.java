@@ -1,58 +1,70 @@
 package controller;
 
+import model.Boxer;
 import model.Game;
 import model.Hero;
-import view.CardPanel;
-import view.StartPanel;
+import view.PnlCards;
 
-import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StartController {
     private final GameController gameController;
     private final CombatController combatController;
     private final CardLayout cardLayout;
-    private final CardPanel cardPanel;
-    private final StartPanel startPanel;
-
+    private final PnlCards pnlCards;
 
     public StartController() {
-        cardPanel = new CardPanel();
-        cardLayout = cardPanel.cardLayout;
-        startPanel = cardPanel.startPanel;
+        List<String> heroes;
 
-        gameController = new GameController(cardPanel);
-        combatController = new CombatController(cardPanel);
+        pnlCards = new PnlCards();
+        cardLayout = pnlCards.cardLayout;
 
-        for (Hero hero : Game.heroes) {
-            startPanel.cmbHeroes.addItem(hero.getName());
-        }
+        gameController = new GameController(pnlCards);
+        combatController = new CombatController(pnlCards);
 
-        startPanel.lblHeroIcon.setIcon(Game.heroes.get(0).getIcon());
-        startPanel.lblHeroIcon.setToolTipText(LogBuilder.buildToolTip(Game.heroes.get(0)));
+        heroes = Game.heroes.stream().map(Boxer::getName).collect(Collectors.toList());
+        pnlCards.addHeroes(heroes);
 
-        startPanel.cmbHeroes.addActionListener(e -> selectHero());
-        startPanel.btnSelectHero.addActionListener(e -> startNewGame());
-    }
-
-    public JPanel getCards() {
-        return cardPanel;
+        pnlCards.addStartPanelListeners(e -> selectHero(), e -> startNewGame());
     }
 
     private void selectHero() {
         int i;
+        Hero hero;
 
-        i = startPanel.cmbHeroes.getSelectedIndex();
-        startPanel.lblHeroIcon.setIcon(Game.heroes.get(i).getIcon());
-        startPanel.lblHeroIcon.setToolTipText(LogBuilder.buildToolTip(Game.heroes.get(i)));
+        i = pnlCards.getSelectedHero();
+        hero = Game.heroes.get(i);
+
+        pnlCards.updateStartView(hero.getIcon(), LogBuilder.buildToolTip(hero));
     }
 
     private void startNewGame() {
-        Game game = new Game();
-        game.selectHero(startPanel.cmbHeroes.getSelectedIndex());
+        int i;
+        Game game;
+
+        game = new Game();
+        i = pnlCards.getSelectedHero();
+        game.selectHero(i);
         gameController.setGame(game);
         combatController.setGame(game);
-        gameController.runNewGame();
-        cardLayout.show(cardPanel, CardPanel.GAME_PANEL);
+
+        pnlCards.updateGameView(LogBuilder.buildGameLog(game),
+                game.getPlayer().getIcon(),
+                LogBuilder.buildToolTip(game.getPlayer()),
+                game.getPlayer().getName(),
+                game.getCurrentEnemy().getIcon(),
+                LogBuilder.buildToolTip(game.getCurrentEnemy()),
+                game.getCurrentEnemy().getName()
+        );
+
+        pnlCards.updateGameButtonsView(true,
+                false,
+                true,
+                true,
+                true);
+
+        cardLayout.show(pnlCards, PnlCards.GAME_PANEL);
     }
 }

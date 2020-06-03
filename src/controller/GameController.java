@@ -1,10 +1,11 @@
 package controller;
 
+import model.Boxer;
 import model.Game;
-import view.CardPanel;
-import view.GamePanel;
+import model.Hero;
+import view.PnlCards;
+import view.PnlGame;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -12,19 +13,19 @@ import java.awt.event.ComponentEvent;
 import static controller.LogBuilder.*;
 
 public class GameController {
-    private final GamePanel gamePanel;
+    private final PnlGame pnlGame;
     private final CardLayout cardLayout;
-    private final JPanel cardPanel;
+    private final PnlCards pnlCards;
     private Game game;
 
 
-    public GameController(CardPanel cardPanel) {
-        this.cardPanel = cardPanel;
-        this.gamePanel = cardPanel.gamePanel;
-        this.cardLayout = cardPanel.cardLayout;
+    public GameController(PnlCards pnlCards) {
+        this.pnlCards = pnlCards;
+        this.pnlGame = pnlCards.pnlGame;
+        this.cardLayout = pnlCards.cardLayout;
 
 
-        gamePanel.addComponentListener(new ComponentAdapter() {
+        pnlGame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e);
@@ -32,28 +33,34 @@ public class GameController {
             }
         });
 
-        gamePanel.btnNewCombat.addActionListener(e -> startNewCombat());
-        gamePanel.btnRest.addActionListener(e -> rest());
-        gamePanel.btnCardio.addActionListener(e -> cardio());
-        gamePanel.btnWorkout.addActionListener(e -> workout());
-        gamePanel.btnExitGame.addActionListener(e -> finishGame());
-    }
-
-    public void runNewGame() {
-        gamePanel.lblPlayerIcon.setIcon(game.getPlayer().getIcon());
-        gamePanel.lblPlayerName.setText(game.getPlayer().getName());
-        gamePanel.lblEnemyIcon.setIcon(game.getCurrentEnemy().getIcon());
-        gamePanel.lblGameProgress.setText(LogBuilder.buildGameLog(game));
-
-        gamePanel.btnRest.setEnabled(false);
-        gamePanel.btnNewCombat.setEnabled(true);
-        gamePanel.btnWorkout.setEnabled(true);
-        gamePanel.btnCardio.setEnabled(true);
+        pnlGame.btnNewCombat.addActionListener(e -> startNewCombat());
+        pnlGame.btnRest.addActionListener(e -> rest());
+        pnlGame.btnCardio.addActionListener(e -> cardio());
+        pnlGame.btnWorkout.addActionListener(e -> workout());
+        pnlGame.btnExitGame.addActionListener(e -> finishGame());
     }
 
     public void startNewCombat() {
+        Hero player;
+        Boxer enemy;
+
         game.startNewCombat();
-        cardLayout.show(cardPanel, CardPanel.COMBAT_PANEL);
+
+        player = game.getCombat().getPlayer();
+        enemy = game.getCombat().getEnemy();
+
+        pnlCards.updateCombatView(
+                player.getIcon(),
+                LogBuilder.buildToolTip(player),
+                player.getMaxHp(),
+                player.getMaxStamina(),
+                enemy.getIcon(),
+                LogBuilder.buildToolTip(enemy),
+                enemy.getMaxHp(),
+                enemy.getMaxStamina()
+        );
+
+        cardLayout.show(pnlCards, PnlCards.COMBAT_PANEL);
     }
 
     public void setGame(Game game) {
@@ -61,50 +68,50 @@ public class GameController {
     }
 
     public void rest() {
-        gamePanel.txtGameLog.append(buildRestLog(game.rest()) + "\n");
+        pnlGame.txtGameLog.append(buildRestLog(game.rest()) + "\n");
     }
 
     public void workout() {
-        gamePanel.txtGameLog.append(buildWorkoutLog(game.workout()) + "\n");
-        gamePanel.lblPlayerIcon.setToolTipText(LogBuilder.buildToolTip(game.getPlayer()));
+        pnlGame.txtGameLog.append(buildWorkoutLog(game.workout()) + "\n");
+        pnlGame.lblPlayerIcon.setToolTipText(LogBuilder.buildToolTip(game.getPlayer()));
     }
 
     public void cardio() {
-        gamePanel.txtGameLog.append(buildCardioLog(game.cardio()) + "\n");
-        gamePanel.lblPlayerIcon.setToolTipText(LogBuilder.buildToolTip(game.getPlayer()));
+        pnlGame.txtGameLog.append(buildCardioLog(game.cardio()) + "\n");
+        pnlGame.lblPlayerIcon.setToolTipText(LogBuilder.buildToolTip(game.getPlayer()));
 
         if (game.isGameEnded()) {
-            gamePanel.btnNewCombat.setEnabled(false);
-            gamePanel.btnWorkout.setEnabled(false);
-            gamePanel.btnCardio.setEnabled(false);
-            gamePanel.btnExitGame.setEnabled(true);
+            pnlGame.btnNewCombat.setEnabled(false);
+            pnlGame.btnWorkout.setEnabled(false);
+            pnlGame.btnCardio.setEnabled(false);
+            pnlGame.btnExitGame.setEnabled(true);
         }
     }
 
     private void finishGame() {
         game.finishGame();
-        cardLayout.show(cardPanel, CardPanel.START_PANEL);
+        cardLayout.show(pnlCards, PnlCards.START_PANEL);
     }
 
     private void updateView() {
         if (game.isGameEnded()) {
-            gamePanel.btnNewCombat.setEnabled(false);
-            gamePanel.btnRest.setEnabled(false);
-            gamePanel.btnWorkout.setEnabled(false);
-            gamePanel.btnCardio.setEnabled(false);
-            gamePanel.btnExitGame.setEnabled(true);
+            pnlGame.btnNewCombat.setEnabled(false);
+            pnlGame.btnRest.setEnabled(false);
+            pnlGame.btnWorkout.setEnabled(false);
+            pnlGame.btnCardio.setEnabled(false);
+            pnlGame.btnExitGame.setEnabled(true);
         } else if (game.isRestRequired()) {
-            gamePanel.btnNewCombat.setEnabled(false);
-            gamePanel.btnRest.setEnabled(true);
-            gamePanel.btnWorkout.setEnabled(false);
-            gamePanel.btnCardio.setEnabled(false);
-            gamePanel.btnExitGame.setEnabled(false);
+            pnlGame.btnNewCombat.setEnabled(false);
+            pnlGame.btnRest.setEnabled(true);
+            pnlGame.btnWorkout.setEnabled(false);
+            pnlGame.btnCardio.setEnabled(false);
+            pnlGame.btnExitGame.setEnabled(false);
         } else {
-            gamePanel.btnNewCombat.setEnabled(true);
-            gamePanel.btnRest.setEnabled(false);
-            gamePanel.btnWorkout.setEnabled(true);
-            gamePanel.btnCardio.setEnabled(true);
-            gamePanel.btnExitGame.setEnabled(false);
+            pnlGame.btnNewCombat.setEnabled(true);
+            pnlGame.btnRest.setEnabled(false);
+            pnlGame.btnWorkout.setEnabled(true);
+            pnlGame.btnCardio.setEnabled(true);
+            pnlGame.btnExitGame.setEnabled(false);
         }
     }
 }

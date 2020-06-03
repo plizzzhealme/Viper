@@ -4,42 +4,29 @@ import model.Boxer;
 import model.Combat;
 import model.Game;
 import model.Hero;
-import view.CardPanel;
-import view.CombatPanel;
+import view.PnlCards;
 
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class CombatController {
-    private final CombatPanel combatPanel;
-    private final CardPanel cardPanel;
+    private final PnlCards pnlCards;
     private final CardLayout cardLayout;
     private Game game;
     private Combat combat;
     private Hero player;
     private Boxer enemy;
 
-    public CombatController(CardPanel cardPanel) {
-        this.cardPanel = cardPanel;
-        combatPanel = cardPanel.combatPanel;
-        cardLayout = cardPanel.cardLayout;
+    public CombatController(PnlCards pnlCards) {
+        this.pnlCards = pnlCards;
+        cardLayout = pnlCards.cardLayout;
 
-        combatPanel.btnAttack.addActionListener(e -> attack());
-        combatPanel.btnSpecialAttack.addActionListener(e -> specialAttack());
-        combatPanel.btnRecover.addActionListener(e -> recover());
-        combatPanel.btnExitCombat.addActionListener(e -> toGameMenu());
-
-        combatPanel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                super.componentShown(e);
-                runNewCombat();
-            }
-        });
+        pnlCards.addCombatPanelListeners(e -> attack(),
+                e -> specialAttack(),
+                e -> recover(),
+                e -> exit());
     }
 
-    void setGame(Game game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
@@ -49,7 +36,7 @@ public class CombatController {
         enemy = combat.getEnemy();
 
         // set initial panel view
-        cardPanel.updateCombatView(
+        pnlCards.updateCombatView(
                 player.getIcon(),
                 LogBuilder.buildToolTip(player),
                 player.getMaxHp(),
@@ -73,9 +60,9 @@ public class CombatController {
         printCombatLog(combat.makeRecoveryTurn());
     }
 
-    private void toGameMenu() {
+    private void exit() {
         game.finishCombat();
-        cardLayout.show(cardPanel, CardPanel.GAME_PANEL);
+        cardLayout.show(pnlCards, PnlCards.GAME_PANEL);
     }
 
     private void printCombatLog(int result) {
@@ -93,16 +80,16 @@ public class CombatController {
 
     private void updateView(String log) {
         // update combat log and progress bars
-        cardPanel.updateCombatView(log,
+        pnlCards.updateCombatView(log,
                 player.getCurrentHp(),
                 player.getCurrentStamina(),
                 enemy.getCurrentHp(),
                 enemy.getCurrentStamina());
 
         if (combat.isCombatEnded()) {
-            cardPanel.updateCombatButtonsView(false, false, false, true);
+            pnlCards.updateCombatButtonsView(false, false, false, true);
         } else {
-            cardPanel.updateCombatButtonsView(player.isAttackAvailable(),
+            pnlCards.updateCombatButtonsView(player.isAttackAvailable(),
                     !combat.isSpecialAttackUsed() && player.isSpecialAttackAvailable(),
                     player.getCurrentStamina() < player.getMaxStamina(),
                     false);

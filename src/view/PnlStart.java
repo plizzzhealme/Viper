@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-public class StartPanel extends JPanel {
+public class PnlStart extends JPanel {
     /**
      * Displays game logo
      */
@@ -29,7 +29,7 @@ public class StartPanel extends JPanel {
      */
     public final JComboBox<String> cmbHeroes;
 
-    public StartPanel() {
+    public PnlStart() {
         lblLogo = new JLabel(new ImageIcon("data/logo-image.png"));
 
         txtInfo = new JTextArea(1, 1);
@@ -37,7 +37,7 @@ public class StartPanel extends JPanel {
         txtInfo.setLineWrap(true);
         txtInfo.setWrapStyleWord(true);
 
-        lblHeroIcon = new JLabel();
+        lblHeroIcon = new JLabel(new ImageIcon("resources/enemies/no-enemy.gif"));
 
         btnSelectHero = new JButton(new ImageIcon("resources/buttons/confirm.png"));
         btnSelectHero.setPreferredSize(new Dimension(32, 32));

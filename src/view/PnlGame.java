@@ -3,8 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-public class GamePanel extends JPanel {
-    // common
+public class PnlGame extends JPanel {
     public final JTextArea txtGameLog;
     public final JLabel lblGameProgress;
     public final JButton btnNewCombat;
@@ -12,19 +11,14 @@ public class GamePanel extends JPanel {
     public final JButton btnWorkout;
     public final JButton btnCardio;
     public final JButton btnExitGame;
-
-    // player
     public final JLabel lblPlayerIcon;
     public final JLabel lblPlayerName;
-
-    // enemy
     public final JLabel lblEnemyIcon;
     public final JLabel lblEnemyName;
 
-    public GamePanel() {
+    public PnlGame() {
         Dimension buttonSize;
 
-        // common
         lblPlayerName = new JLabel();
         lblPlayerIcon = new JLabel();
         txtGameLog = new JTextArea(1, 1);

@@ -1,6 +1,9 @@
 package controller;
 
+import model.Boxer;
+import model.Combat;
 import model.Game;
+import model.Hero;
 import view.CardPanel;
 import view.CombatPanel;
 
@@ -13,6 +16,9 @@ public class CombatController {
     private final CardPanel cardPanel;
     private final CardLayout cardLayout;
     private Game game;
+    private Combat combat;
+    private Hero player;
+    private Boxer enemy;
 
     public CombatController(CardPanel cardPanel) {
         this.cardPanel = cardPanel;
@@ -38,39 +44,33 @@ public class CombatController {
     }
 
     public void runNewCombat() {
-        combatPanel.lblPlayerIcon.setIcon(game.getCombat().getPlayer().getIcon());
-        combatPanel.txtCombatLog.setText("");
+        combat = game.getCombat();
+        player = combat.getPlayer();
+        enemy = combat.getEnemy();
 
-        combatPanel.lblEnemyIcon.setIcon(game.
-                getCombat().
-                getEnemy().
-                getIcon());
-        combatPanel.lblEnemyIcon.setToolTipText(LogBuilder.buildToolTip(game.getCurrentEnemy()));
-
-        combatPanel.prgPlayerHealth.setMaximum(game.getPlayer().getMaxHp());
-        combatPanel.prgPlayerHealth.setValue(game.getPlayer().getCurrentHp());
-
-        combatPanel.prgPlayerStamina.setMaximum(game.getPlayer().getMaxStamina());
-        combatPanel.prgPlayerStamina.setValue(game.getPlayer().getCurrentStamina());
-
-        combatPanel.prgEnemyHealth.setMaximum(game.getCurrentEnemy().getMaxHp());
-        combatPanel.prgEnemyHealth.setValue(game.getCurrentEnemy().getCurrentHp());
-
-        combatPanel.prgEnemyStamina.setMaximum(game.getCurrentEnemy().getMaxStamina());
-        combatPanel.prgEnemyStamina.setValue(game.getCurrentEnemy().getCurrentStamina());
-        updateView();
+        // set initial panel view
+        cardPanel.updateCombatView(
+                player.getIcon(),
+                LogBuilder.buildToolTip(player),
+                player.getMaxHp(),
+                player.getMaxStamina(),
+                enemy.getIcon(),
+                LogBuilder.buildToolTip(enemy),
+                enemy.getMaxHp(),
+                enemy.getMaxStamina()
+        );
     }
 
     private void attack() {
-        printCombatLog(game.getCombat().makeAttackTurn());
+        printCombatLog(combat.makeAttackTurn());
     }
 
     private void specialAttack() {
-        printCombatLog(game.getCombat().makeSpecialAttackTurn());
+        printCombatLog(combat.makeSpecialAttackTurn());
     }
 
     private void recover() {
-        printCombatLog(game.getCombat().makeRecoveryTurn());
+        printCombatLog(combat.makeRecoveryTurn());
     }
 
     private void toGameMenu() {
@@ -79,35 +79,33 @@ public class CombatController {
     }
 
     private void printCombatLog(int result) {
-        combatPanel.txtCombatLog.append(LogBuilder.buildTurnLog(result,
+        updateView(LogBuilder.buildTurnLog(result,
                 game.getCombat().getPlayer().getName(),
                 game.getCombat().getEnemy().getName()));
-        combatPanel.txtCombatLog.append("\n");
 
         if (!game.getCombat().isCombatEnded()) {
             result = game.getCombat().makeBotTurn();
-            combatPanel.txtCombatLog.append(LogBuilder.buildTurnLog(result,
+            updateView(LogBuilder.buildTurnLog(result,
                     game.getCombat().getEnemy().getName(),
                     game.getCombat().getPlayer().getName()));
-            combatPanel.txtCombatLog.append("\n");
         }
-        updateView();
     }
 
-    private void updateView() {
-        combatPanel.prgPlayerHealth.setValue(game.getCombat().getPlayer().getCurrentHp());
-        combatPanel.prgPlayerStamina.setValue(game.getCombat().getPlayer().getCurrentStamina());
+    private void updateView(String log) {
+        // update combat log and progress bars
+        cardPanel.updateCombatView(log,
+                player.getCurrentHp(),
+                player.getCurrentStamina(),
+                enemy.getCurrentHp(),
+                enemy.getCurrentStamina());
 
-        combatPanel.prgEnemyHealth.setValue(game.getCombat().getEnemy().getCurrentHp());
-        combatPanel.prgEnemyStamina.setValue(game.getCombat().getEnemy().getCurrentStamina());
-
-        combatPanel.btnAttack.setEnabled(game.getCombat().getPlayer().isAttackAvailable()
-                && !game.getCombat().isCombatEnded());
-        combatPanel.btnSpecialAttack.setEnabled(!game.getCombat().isSpecialAttackUsed()
-                && game.getCombat().getPlayer().isSpecialAttackAvailable()
-                && !game.getCombat().isCombatEnded());
-        combatPanel.btnRecover.setEnabled(game.getCombat().getPlayer().getCurrentStamina() < game.getCombat().getPlayer().getMaxStamina()
-                && !game.getCombat().isCombatEnded());
-        combatPanel.btnExitCombat.setEnabled(game.getCombat().isCombatEnded());
+        if (combat.isCombatEnded()) {
+            cardPanel.updateCombatButtonsView(false, false, false, true);
+        } else {
+            cardPanel.updateCombatButtonsView(player.isAttackAvailable(),
+                    !combat.isSpecialAttackUsed() && player.isSpecialAttackAvailable(),
+                    player.getCurrentStamina() < player.getMaxStamina(),
+                    false);
+        }
     }
 }

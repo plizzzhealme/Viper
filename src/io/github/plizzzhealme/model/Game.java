@@ -1,4 +1,8 @@
-package model;
+package io.github.plizzzhealme.model;
+
+import io.github.plizzzhealme.model.character.Boxer;
+import io.github.plizzzhealme.model.character.Hero;
+import io.github.plizzzhealme.model.combat.Combat;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -91,7 +95,7 @@ public class Game {
         }
 
         int restTime;
-        int hpPercents = 100 * player.getCurrentHp() / player.getMaxHp();
+        int hpPercents = 100 * player.getCurrentHealth() / player.getMaxHealth();
 
         if (hpPercents == 0) {
             restTime = 7;

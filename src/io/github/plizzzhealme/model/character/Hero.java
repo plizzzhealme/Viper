@@ -1,4 +1,4 @@
-package model;
+package io.github.plizzzhealme.model.character;
 
 import javax.swing.*;
 
@@ -31,8 +31,8 @@ public class Hero extends Boxer {
 
         damage = (int) (10.25 + strength * 1.4 + 0.5);
         defence = Math.min((int) (2.5 + strength + 0.5), MAX_DEFENCE);
-        maxHp = 110 + 3 * strength;
-        currentHp = maxHp;
+        maxHealth = 110 + 3 * strength;
+        currentHealth = maxHealth;
         attackCost = Math.min((int) (3.55 + 0.45 * strength + 0.5), maxStamina);
     }
 

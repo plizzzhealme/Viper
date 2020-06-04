@@ -1,6 +1,6 @@
-package viper;
+package io.github.plizzzhealme.viper;
 
-import controller.StartController;
+import io.github.plizzzhealme.controller.StartController;
 
 public class Viper {
 

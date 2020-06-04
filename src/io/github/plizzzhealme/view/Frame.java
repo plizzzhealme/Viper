@@ -1,11 +1,13 @@
-package view;
+package io.github.plizzzhealme.view;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class PnlCards extends JPanel {
+public class Frame extends JPanel {
+    public static final int WIDTH = 750;
+    public static final int HEIGHT = 375;
     public static final String START_PANEL = "1";
     public static final String GAME_PANEL = "2";
     public static final String COMBAT_PANEL = "3";
@@ -14,7 +16,7 @@ public class PnlCards extends JPanel {
     public PnlCombat combatPanel;
     public CardLayout cardLayout;
 
-    public PnlCards() {
+    public Frame() {
         JFrame frame;
 
         cardLayout = new CardLayout();
@@ -29,7 +31,7 @@ public class PnlCards extends JPanel {
         add(combatPanel, COMBAT_PANEL);
 
         frame = new JFrame();
-        frame.setSize(750, 375);
+        frame.setSize(WIDTH, HEIGHT);
         frame.setIconImage(new ImageIcon("data/logo-icon.png").getImage());
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

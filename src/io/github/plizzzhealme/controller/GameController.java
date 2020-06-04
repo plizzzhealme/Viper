@@ -1,28 +1,28 @@
-package controller;
+package io.github.plizzzhealme.controller;
 
-import model.Boxer;
-import model.Game;
-import model.Hero;
-import view.PnlCards;
-import view.PnlGame;
+import io.github.plizzzhealme.model.Game;
+import io.github.plizzzhealme.model.character.Boxer;
+import io.github.plizzzhealme.model.character.Hero;
+import io.github.plizzzhealme.view.Frame;
+import io.github.plizzzhealme.view.PnlGame;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import static controller.LogBuilder.*;
+import static io.github.plizzzhealme.controller.LogBuilder.*;
 
 public class GameController {
     private final PnlGame pnlGame;
     private final CardLayout cardLayout;
-    private final PnlCards pnlCards;
+    private final Frame frame;
     private Game game;
 
 
-    public GameController(PnlCards pnlCards) {
-        this.pnlCards = pnlCards;
-        this.pnlGame = pnlCards.pnlGame;
-        this.cardLayout = pnlCards.cardLayout;
+    public GameController(Frame frame) {
+        this.frame = frame;
+        this.pnlGame = frame.pnlGame;
+        this.cardLayout = frame.cardLayout;
 
 
         pnlGame.addComponentListener(new ComponentAdapter() {
@@ -49,18 +49,20 @@ public class GameController {
         player = game.getCombat().getPlayer();
         enemy = game.getCombat().getEnemy();
 
-        pnlCards.updateCombatView(
+        frame.updateCombatView(
                 player.getIcon(),
                 LogBuilder.buildToolTip(player),
-                player.getMaxHp(),
+                player.getMaxHealth(),
                 player.getMaxStamina(),
                 enemy.getIcon(),
                 LogBuilder.buildToolTip(enemy),
-                enemy.getMaxHp(),
+                enemy.getMaxHealth(),
                 enemy.getMaxStamina()
         );
 
-        cardLayout.show(pnlCards, PnlCards.COMBAT_PANEL);
+        frame.updateCombatButtonsView(true, true, true, false);
+
+        cardLayout.show(frame, Frame.COMBAT_PANEL);
     }
 
     public void setGame(Game game) {
@@ -69,6 +71,7 @@ public class GameController {
 
     public void rest() {
         pnlGame.txtGameLog.append(buildRestLog(game.rest()) + "\n");
+        updateView();
     }
 
     public void workout() {
@@ -90,7 +93,7 @@ public class GameController {
 
     private void finishGame() {
         game.finishGame();
-        cardLayout.show(pnlCards, PnlCards.START_PANEL);
+        cardLayout.show(frame, Frame.START_PANEL);
     }
 
     private void updateView() {

@@ -1,64 +1,63 @@
-package model;
+package io.github.plizzzhealme.model.combat;
+
+import io.github.plizzzhealme.model.character.Boxer;
+import io.github.plizzzhealme.model.character.Hero;
 
 public class Combat {
-    /**
-     * User
-     */
     private final Hero player;
-
-    /**
-     * Bot
-     */
     private final Boxer enemy;
-
-    /**
-     * Special attack may be used once per combat
-     */
     private boolean specialAttackUsed;
-
-    private boolean playersTurn;
 
     public Combat(Hero player, Boxer enemy) {
         this.player = player;
         this.enemy = enemy;
-        playersTurn = true;
     }
 
-    public int makeAttackTurn() {
+    public Turn makeAttackTurn() {
+        Turn turn;
         int damageDone;
         int damageTaken;
 
         damageDone = player.attack();
         damageTaken = enemy.takeDamage(damageDone);
-        playersTurn = false;
-        return damageTaken;
+        turn = new Turn(Turn.ATTACK, damageTaken);
+        makeBotTurn(turn);
+        return turn;
     }
 
-    public int makeSpecialAttackTurn() {
+    public Turn makeSpecialAttackTurn() {
+        Turn turn;
         int damageDone;
         int damageTaken;
 
-        specialAttackUsed = true;
-        playersTurn = false;
         damageDone = player.makeSpecialAttack();
+        specialAttackUsed = true;
         damageTaken = enemy.takeDamage(damageDone);
-        return damageTaken;
+        turn = new Turn(Turn.SPECIAL_ATTACK, damageTaken);
+        makeBotTurn(turn);
+        return turn;
     }
 
-    public int makeRecoveryTurn() {
-        return -player.recoverStamina();
+    public Turn makeRecoveryTurn() {
+        Turn turn;
+
+        player.recoverStamina();
+        turn = new Turn(Turn.RECOVER, player.getStaminaRegen());
+        makeBotTurn(turn);
+        return turn;
     }
 
-    public int makeBotTurn() {
+    private void makeBotTurn(Turn turn) {
         if (enemy.isAttackAvailable()) {
             int damageDone;
             int damageTaken;
 
             damageDone = enemy.attack();
             damageTaken = player.takeDamage(damageDone);
-            return damageTaken;
+            turn.addEnemyTurn(Turn.ATTACK, damageTaken);
         } else {
-            return -enemy.recoverStamina();
+            enemy.recoverStamina();
+            turn.addEnemyTurn(Turn.RECOVER, enemy.getStaminaRegen());
         }
     }
 
@@ -75,11 +74,11 @@ public class Combat {
         return (
                 String.format("%s %d/%d VS %s %d/%d",
                         player.getName(),
-                        player.getCurrentHp(),
-                        player.getMaxHp(),
+                        player.getCurrentHealth(),
+                        player.getMaxHealth(),
                         enemy.getName(),
-                        enemy.getCurrentHp(),
-                        enemy.getMaxHp()));
+                        enemy.getCurrentHealth(),
+                        enemy.getMaxHealth()));
     }
 
     public Hero getPlayer() {

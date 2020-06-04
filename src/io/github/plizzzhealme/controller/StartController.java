@@ -1,9 +1,9 @@
-package controller;
+package io.github.plizzzhealme.controller;
 
-import model.Boxer;
-import model.Game;
-import model.Hero;
-import view.PnlCards;
+import io.github.plizzzhealme.model.Game;
+import io.github.plizzzhealme.model.character.Boxer;
+import io.github.plizzzhealme.model.character.Hero;
+import io.github.plizzzhealme.view.Frame;
 
 import java.awt.*;
 import java.util.List;
@@ -13,31 +13,31 @@ public class StartController {
     private final GameController gameController;
     private final CombatController combatController;
     private final CardLayout cardLayout;
-    private final PnlCards pnlCards;
+    private final Frame frame;
 
     public StartController() {
         List<String> heroes;
 
-        pnlCards = new PnlCards();
-        cardLayout = pnlCards.cardLayout;
+        frame = new Frame();
+        cardLayout = frame.cardLayout;
 
-        gameController = new GameController(pnlCards);
-        combatController = new CombatController(pnlCards);
+        gameController = new GameController(frame);
+        combatController = new CombatController(frame);
 
         heroes = Game.heroes.stream().map(Boxer::getName).collect(Collectors.toList());
-        pnlCards.addHeroes(heroes);
+        frame.addHeroes(heroes);
 
-        pnlCards.addStartPanelListeners(e -> selectHero(), e -> startNewGame());
+        frame.addStartPanelListeners(e -> selectHero(), e -> startNewGame());
     }
 
     private void selectHero() {
         int i;
         Hero hero;
 
-        i = pnlCards.getSelectedHero();
+        i = frame.getSelectedHero();
         hero = Game.heroes.get(i);
 
-        pnlCards.updateStartView(hero.getIcon(), LogBuilder.buildToolTip(hero));
+        frame.updateStartView(hero.getIcon(), LogBuilder.buildToolTip(hero));
     }
 
     private void startNewGame() {
@@ -45,12 +45,12 @@ public class StartController {
         Game game;
 
         game = new Game();
-        i = pnlCards.getSelectedHero();
+        i = frame.getSelectedHero();
         game.selectHero(i);
         gameController.setGame(game);
         combatController.setGame(game);
 
-        pnlCards.updateGameView(LogBuilder.buildGameLog(game),
+        frame.updateGameView(LogBuilder.buildGameLog(game),
                 game.getPlayer().getIcon(),
                 LogBuilder.buildToolTip(game.getPlayer()),
                 game.getPlayer().getName(),
@@ -59,12 +59,12 @@ public class StartController {
                 game.getCurrentEnemy().getName()
         );
 
-        pnlCards.updateGameButtonsView(true,
+        frame.updateGameButtonsView(true,
                 false,
                 true,
                 true,
                 true);
 
-        cardLayout.show(pnlCards, PnlCards.GAME_PANEL);
+        cardLayout.show(frame, Frame.GAME_PANEL);
     }
 }
